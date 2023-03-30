@@ -4,15 +4,16 @@ import api.RepoRequests;
 import api.ResponseValidator;
 import config.BaseRequest;
 import io.restassured.response.Response;
+import org.apache.http.HttpStatus;
 import org.json.JSONObject;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static api.Routing.USER_REPOS;
 import static utils.ReadPropertiesFile.TOKEN;
-import static utils.enums.StatusCodes.CREATED;
+import static utils.enums.AcceptHeaders.GITHUB;
+import static utils.enums.Scopes.PUBLIC_REPO;
 
 @ExtendWith({BaseRequest.class})
 public class RepoPositiveTests {
@@ -35,24 +36,18 @@ public class RepoPositiveTests {
     @Test
     void createRepoOnAuthenticatedUser() {
         // Create the POST body object with required fields
-        JSONObject object = new JSONObject();
-        object.put(propertyName, repoName);
-        object.put(propertyDescription, repoDescription);
-
-        System.out.println(object);
+        JSONObject testRequestBody = new JSONObject();
+        testRequestBody.put(propertyName, repoName);
+        testRequestBody.put(propertyDescription, repoDescription);
 
         // Send POST request to create the repo
-        Response createRepo = repoRequests.sendPostRequest(TOKEN, "public_repo", "application/vnd.github+json", USER_REPOS, object.toString());
-
-        // Extract response property values
-        String responseRepoName = responseValidator.getResponseValue(createRepo, propertyName);
-        String responseRepoDescription = responseValidator.getResponseValue(createRepo, propertyDescription);
-        int responseStatusCode = responseValidator.getResponseStatusCode(createRepo);
+        Response createRepoRequest = repoRequests.sendPostRequest(TOKEN, PUBLIC_REPO, GITHUB, USER_REPOS, testRequestBody.toString());
 
         // Verify response property values
-        Assertions.assertEquals(CREATED.getStatusCode(), responseStatusCode, "Status code:");
-        Assertions.assertEquals(object.get(propertyName), responseRepoName, "Repo name:");
-        Assertions.assertEquals(object.get(propertyDescription), responseRepoDescription, "Repo description: ");
+        responseValidator
+                .verifyStatusCodeIsSame(HttpStatus.SC_CREATED, createRepoRequest)
+                .verifyResponseValueIsSame(propertyName, repoName, createRepoRequest)
+                .verifyResponseValueIsSame(propertyDescription, repoDescription, createRepoRequest);
 
         // Delete the test repo
         repoRequests.sendDeleteRequest(repoName);
