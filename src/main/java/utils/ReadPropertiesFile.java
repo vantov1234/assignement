@@ -11,7 +11,7 @@ public class ReadPropertiesFile {
     public static final String OWNER = getConfigurationProperty("owner");
 
     private static String getConfigurationProperty(String propertyName) {
-        String propertyFile = Constants.envFileName;
+        String propertyFile = Constants.ENV_FILE_NAME;
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         Properties props = new Properties();
         try (InputStream resourceStream = loader.getResourceAsStream(propertyFile)) {

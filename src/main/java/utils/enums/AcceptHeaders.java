@@ -2,7 +2,8 @@ package utils.enums;
 
 public enum AcceptHeaders {
 
-    GITHUB("application/vnd.github+json");
+    GITHUB("application/vnd.github+json"),
+    TEXT("text/html; charset=utf-8");
 
     AcceptHeaders(String acceptHeader) {
         this.acceptHeader = acceptHeader;

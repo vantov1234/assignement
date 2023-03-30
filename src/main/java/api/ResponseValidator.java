@@ -17,12 +17,14 @@ public class ResponseValidator {
         return this;
     }
 
-    public String getResponseValue(String responseParameter, Response response) {
-        JsonPath path = response.jsonPath();
-        return path.get(responseParameter);
+    public ResponseValidator verifyResponseValueIsDifferent(String key, String value, Response response) {
+        String responseValue = getResponseValue(key, response);
+        Assertions.assertNotEquals(value, responseValue, key);
+        return this;
     }
 
-    public int getResponseStatusCode(Response response) {
-        return response.getStatusCode();
+    private String getResponseValue(String responseParameter, Response response) {
+        JsonPath path = response.jsonPath();
+        return path.get(responseParameter);
     }
 }
