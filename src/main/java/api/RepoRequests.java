@@ -10,13 +10,13 @@ import static utils.ReadPropertiesFile.TOKEN;
 
 public class RepoRequests {
 
-    public Response sendPostRequest(Object postBody) {
+    public Response sendPostRequest(String token, String scope, String accept, String endPoint, String postBody) {
         return given()
-                .header("Authorization", "Bearer " + TOKEN)
-                .header("scope", "public_repo")
-                .accept("application/vnd.github+json")
+                .header("Authorization", "Bearer " + token)
+                .header("scope", scope)
+                .accept(accept)
                 .body(postBody)
-                .post(USER_REPOS)
+                .post(endPoint)
                 .then()
                 .extract()
                 .response();
