@@ -12,18 +12,18 @@ public class ResponseValidator {
     }
 
     public ResponseValidator verifyResponseValueIsSame(String key, String value, Response response) {
-        String responseValue = getResponseValue(key, response);
+        String responseValue = getResponseValueByKey(key, response);
         Assertions.assertEquals(value, responseValue, key);
         return this;
     }
 
     public ResponseValidator verifyResponseValueIsDifferent(String key, String value, Response response) {
-        String responseValue = getResponseValue(key, response);
+        String responseValue = getResponseValueByKey(key, response);
         Assertions.assertNotEquals(value, responseValue, key);
         return this;
     }
 
-    private String getResponseValue(String responseParameter, Response response) {
+    private String getResponseValueByKey(String responseParameter, Response response) {
         JsonPath path = response.jsonPath();
         return path.get(responseParameter);
     }
